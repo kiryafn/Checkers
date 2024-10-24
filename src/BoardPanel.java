@@ -6,32 +6,34 @@ import java.util.Arrays;
 public class BoardPanel extends JPanel{
 
     private static final int BOARD_SIZE = 8;
-    private static final int TILE_SIZE = 100;
-    private int[][] boardState;
+    private int[][] boardState = new int[BOARD_SIZE][BOARD_SIZE];
+    private JLabel[][] labelsArray = new JLabel[BOARD_SIZE][BOARD_SIZE];
 
     public BoardPanel() {
-        this.setFocusable(true);
-        this.setPreferredSize(new Dimension(BOARD_SIZE * TILE_SIZE, BOARD_SIZE * TILE_SIZE));
-        this.boardState = new int[BOARD_SIZE][BOARD_SIZE];
+        setVisible(true);
+        setFocusable(true);
+        setLayout(new GridLayout(BOARD_SIZE, BOARD_SIZE));
+        paint();
     }
 
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
+    public void paint(){
+        for(int x=0; x<BOARD_SIZE; x++){
+            for(int y=0; y<BOARD_SIZE; y++){
+                JLabel l = new JLabel();
+                l.setOpaque(true);
+                l.setVerticalAlignment(SwingConstants.CENTER);
+                l.setHorizontalAlignment(SwingConstants.CENTER);
 
-        int squareSizeX = getWidth() / 8;
-        int squareSizeY = getHeight() / 8;
+                if((x+y)%2==0)
+                    l.setBackground(new Color(236, 219, 185));
+                else
+                    l.setBackground(new Color(174,137,104));
 
-
-        for(int i=0, x=0; i<BOARD_SIZE; i++, x+=squareSizeX){
-            for(int j=0, y=0; j<BOARD_SIZE; j++, y+=squareSizeY){
-                if((i+j)%2==0) {
-                    g.setColor(new Color(236, 219, 185));
-                } else {
-                    g.setColor(new Color(174,137,104));
-                }
-                g.fillRect(x, y, squareSizeX, squareSizeY);
+                add(l);
+                labelsArray[x][y] = l;
             }
         }
     }
+
+    public native int buba();
 }
