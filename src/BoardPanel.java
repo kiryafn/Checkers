@@ -17,8 +17,6 @@ public class BoardPanel extends JPanel{
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-
-
         int squareSizeX = getWidth() / 8;
         int squareSizeY = getHeight() / 8;
 
