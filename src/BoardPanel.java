@@ -6,11 +6,12 @@ import java.util.Arrays;
 public class BoardPanel extends JPanel{
 
     private static final int BOARD_SIZE = 8;
-    private static final int DEFAULT_TILE_SIZE = 100;
+    private static final int DEFAULT_TILE_SIZE = 1;
+    boolean bw = true;
 
     public BoardPanel() {
-        this.setFocusable(true);
-        //this.setPreferredSize(new Dimension(BOARD_SIZE * DEFAULT_TILE_SIZE, BOARD_SIZE * DEFAULT_TILE_SIZE));
+        setFocusable(true);
+        setPreferredSize(new Dimension(BOARD_SIZE * DEFAULT_TILE_SIZE, BOARD_SIZE * DEFAULT_TILE_SIZE));
     }
 
     @Override
@@ -19,7 +20,6 @@ public class BoardPanel extends JPanel{
 
         int squareSizeX = getWidth() / 8;
         int squareSizeY = getHeight() / 8;
-
 
         for(int i=0, x=0; i<BOARD_SIZE; i++, x+=squareSizeX){
             for(int j=0, y=0; j<BOARD_SIZE; j++, y+=squareSizeY){
@@ -31,5 +31,9 @@ public class BoardPanel extends JPanel{
                 g.fillRect(x, y, squareSizeX, squareSizeY);
             }
         }
+    }
+
+    public void paintPieces(Graphics g, int[][] boardState){
+
     }
 }
