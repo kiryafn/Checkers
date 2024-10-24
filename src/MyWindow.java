@@ -12,12 +12,21 @@ public class MyWindow extends JFrame{
         setVisible(true);
         setLayout(new BorderLayout());
         add(board, BorderLayout.CENTER);
-
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
                 board.repaint();
             }
         });
+
+        SidePanel northPanel = new SidePanel(true, true);
+        SidePanel southPanel = new SidePanel(true, true);
+        SidePanel eastPanel = new SidePanel(false, false);
+        SidePanel westPanel = new SidePanel(false, false);
+        add(northPanel, BorderLayout.NORTH);
+        add(southPanel, BorderLayout.SOUTH);
+        add(eastPanel, BorderLayout.EAST);
+        add(westPanel, BorderLayout.WEST);
+
     }
 }

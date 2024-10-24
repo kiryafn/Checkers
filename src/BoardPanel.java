@@ -6,18 +6,18 @@ import java.util.Arrays;
 public class BoardPanel extends JPanel{
 
     private static final int BOARD_SIZE = 8;
-    private static final int TILE_SIZE = 100;
-    private int[][] boardState;
+    private static final int DEFAULT_TILE_SIZE = 100;
 
     public BoardPanel() {
         this.setFocusable(true);
-        this.setPreferredSize(new Dimension(BOARD_SIZE * TILE_SIZE, BOARD_SIZE * TILE_SIZE));
-        this.boardState = new int[BOARD_SIZE][BOARD_SIZE];
+        //this.setPreferredSize(new Dimension(BOARD_SIZE * DEFAULT_TILE_SIZE, BOARD_SIZE * DEFAULT_TILE_SIZE));
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+
+
 
         int squareSizeX = getWidth() / 8;
         int squareSizeY = getHeight() / 8;
