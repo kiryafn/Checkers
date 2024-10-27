@@ -1,7 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 
-public class SidePanel extends JPanel {
+public class SidePanel extends JPanel{
     private final char[] chars = {'A','B','C','D','E','F','G','H'};
     private final int[] ints = {8,7,6,5,4,3,2,1};
 

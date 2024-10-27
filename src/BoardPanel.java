@@ -1,11 +1,13 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 
 
 public class BoardPanel extends JPanel implements MouseListener{
 
     boolean pieceSelected = false;
+    ColorListener colorlistener;
 
     static {
         System.load("/Users/alieksieiev/CLionProjects/Checkers/cmake-build-debug/libCheckers.dylib");
@@ -28,6 +30,7 @@ public class BoardPanel extends JPanel implements MouseListener{
 
         paintBoard(g);
         paintPieces(g);
+
     }
 
     public void paintBoard(Graphics g){
@@ -46,6 +49,8 @@ public class BoardPanel extends JPanel implements MouseListener{
 
                 g.fillRect(x, y, squareSizeX, squareSizeY);
             }
+
+            colorlistener.colorChanged(new ColorChangedEvent(this, jni.getCurrentPlayer() ? Color.BLACK : Color.WHITE));
         }
     }
 
@@ -70,29 +75,54 @@ public class BoardPanel extends JPanel implements MouseListener{
                             squareSizeX-10,
                             squareSizeY-10);
                 }
+
+                else if (jni.getBoardState()[j * 8 + i] == 3) {
+                    g.setColor(Color.WHITE);
+                    g.fillOval(x + (squareSizeX - squareSizeX+10) / 2,
+                            y + (squareSizeY - squareSizeY+10) / 2,
+                            squareSizeX-10,
+                            squareSizeY-10);
+                    g.setColor(Color.BLACK);
+                    g.fillOval(x + (squareSizeX - squareSizeX+20) / 2,
+                            y + (squareSizeY - squareSizeY+20) / 2,
+                            squareSizeX-20,
+                            squareSizeY-20);
+                }
+
+                else if (jni.getBoardState()[j * 8 + i] == 4) {
+                    g.setColor(Color.BLACK);
+                    g.fillOval(x + (squareSizeX - squareSizeX+10) / 2,
+                            y + (squareSizeY - squareSizeY+10) / 2,
+                            squareSizeX-10,
+                            squareSizeY-10);
+                    g.setColor(Color.WHITE);
+                    g.fillOval(x + (squareSizeX - squareSizeX+20) / 2,
+                            y + (squareSizeY - squareSizeY+20) / 2,
+                            squareSizeX-20,
+                            squareSizeY-20);
+                }
             }
         }
     }
 
     @Override
-    public void mouseClicked(MouseEvent e) {
-
-    }
-
-    @Override
     public void mousePressed(MouseEvent e) {
-        
+
         int TILE_SIZE_X = getWidth() / 8;
         int TILE_SIZE_Y = getHeight() / 8;
 
         int col = e.getX() / TILE_SIZE_X;
         int row = e.getY() / TILE_SIZE_Y;
+
         int index = row * 8 + col;
 
 
         if (!pieceSelected) {
             //First click
-            if (jni.getBoardState()[index] != 0) {  // Проверяем, что фишка существует
+            if (jni.getBoardState()[index] != 0 &&
+               (((jni.getBoardState()[index] == 1 || jni.getBoardState()[index] == 3) && jni.getCurrentPlayer()) ||
+               ((jni.getBoardState()[index] == 2 ||  jni.getBoardState()[index] == 4 )&& !jni.getCurrentPlayer()))) {
+
                 selectedRow = row;
                 selectedCol = col;
                 pieceSelected = true;  // Фиксируем, что фишка выбрана
@@ -105,7 +135,6 @@ public class BoardPanel extends JPanel implements MouseListener{
             // Вызываем метод movePiece в C++ через JNI, передавая координаты
             boolean validMove = jni.movePiece(selectedRow, selectedCol, toRow, toCol);
 
-
             // Сброс выбранной фишки после хода
             pieceSelected = false;
             selectedRow = -1;
@@ -115,18 +144,16 @@ public class BoardPanel extends JPanel implements MouseListener{
         repaint();
     }
 
-    @Override
-    public void mouseReleased(MouseEvent e) {
+    public void mouseClicked(MouseEvent e) {
 
     }
+    public void mouseReleased(MouseEvent e) {}
+    public void mouseEntered(MouseEvent e) {}
+    public void mouseExited(MouseEvent e) {}
 
-    @Override
-    public void mouseEntered(MouseEvent e) {
+    private ArrayList<ColorListener> listeners = new ArrayList<>();
 
-    }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
-
+    public void addColorListener(ColorListener listener) {
+        colorlistener = listener;
     }
 }
