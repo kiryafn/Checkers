@@ -2,11 +2,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-public class MyWindow extends JFrame{
-    public MyWindow(BoardPanel board){
+public class MyWindow extends JFrame {
+    public MyWindow(BoardPanel board) {
         setTitle("Checkers");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(800,800);
+        setSize(800, 800);
         setVisible(true);
         setLayout(new BorderLayout());
         add(board, BorderLayout.CENTER);
@@ -20,7 +20,6 @@ public class MyWindow extends JFrame{
 
         SidePanel northPanel = new SidePanel(true, true);
         SidePanel southPanel = new SidePanel(true, true);
-       // SidePanel eastPanel = new SidePanel(false, false);
         SidePanel westPanel = new SidePanel(false, false);
         ColorPanel eastPanel = new ColorPanel();
         board.addColorListener(eastPanel);

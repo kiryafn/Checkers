@@ -151,7 +151,6 @@ public class BoardPanel extends JPanel implements MouseListener{
     public void mouseEntered(MouseEvent e) {}
     public void mouseExited(MouseEvent e) {}
 
-    private ArrayList<ColorListener> listeners = new ArrayList<>();
 
     public void addColorListener(ColorListener listener) {
         colorlistener = listener;
