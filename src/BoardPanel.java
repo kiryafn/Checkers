@@ -13,7 +13,6 @@ public class BoardPanel extends JPanel implements MouseListener{
         System.load("/Users/alieksieiev/CLionProjects/Checkers/cmake-build-debug/libCheckers.dylib");
     }
 
-    private static final int BOARD_SIZE = 8;
     CheckersJNI jni = new CheckersJNI();
     int selectedRow = -1;
     int selectedCol = -1;
@@ -30,7 +29,6 @@ public class BoardPanel extends JPanel implements MouseListener{
 
         paintBoard(g);
         paintPieces(g);
-
     }
 
     public void paintBoard(Graphics g){
@@ -59,16 +57,16 @@ public class BoardPanel extends JPanel implements MouseListener{
         int squareSizeX = getWidth() / 8;
         int squareSizeY = getHeight() / 8;
 
-        for(int i=0, x=0; i<BOARD_SIZE; i++, x+=squareSizeX){
-            for(int j=0, y=0; j<BOARD_SIZE; j++, y+=squareSizeY){
-                if (jni.getBoardState()[j * 8 + i] == 1) {
+        for(int i=0, x=0; i<jni.getBoardSize(); i++, x+=squareSizeX){
+            for(int j=0, y=0; j<jni.getBoardSize(); j++, y+=squareSizeY){
+                if (jni.getBoardValue(j,i) == 1) {
                     g.setColor(Color.BLACK);
                     g.fillOval(x + (squareSizeX - squareSizeX + 10) / 2,
                                y + (squareSizeY - squareSizeY + 10) / 2,
                             squareSizeX - 10,
                             squareSizeY - 10);
                 }
-                else if (jni.getBoardState()[j * 8 + i] == 2) {
+                else if (jni.getBoardValue(j,i) == 2) {
                     g.setColor(Color.WHITE);
                     g.fillOval(x + (squareSizeX - squareSizeX+10) / 2,
                                y + (squareSizeY - squareSizeY+10) / 2,
@@ -76,7 +74,7 @@ public class BoardPanel extends JPanel implements MouseListener{
                             squareSizeY-10);
                 }
 
-                else if (jni.getBoardState()[j * 8 + i] == 3) {
+                else if (jni.getBoardValue(j,i) == 3) {
                     g.setColor(Color.WHITE);
                     g.fillOval(x + (squareSizeX - squareSizeX+10) / 2,
                             y + (squareSizeY - squareSizeY+10) / 2,
@@ -89,7 +87,7 @@ public class BoardPanel extends JPanel implements MouseListener{
                             squareSizeY-20);
                 }
 
-                else if (jni.getBoardState()[j * 8 + i] == 4) {
+                else if (jni.getBoardValue(j,i) == 4) {
                     g.setColor(Color.BLACK);
                     g.fillOval(x + (squareSizeX - squareSizeX+10) / 2,
                             y + (squareSizeY - squareSizeY+10) / 2,
@@ -114,14 +112,11 @@ public class BoardPanel extends JPanel implements MouseListener{
         int col = e.getX() / TILE_SIZE_X;
         int row = e.getY() / TILE_SIZE_Y;
 
-        int index = row * 8 + col;
-
-
         if (!pieceSelected) {
             //First click
-            if (jni.getBoardState()[index] != 0 &&
-               (((jni.getBoardState()[index] == 1 || jni.getBoardState()[index] == 3) && jni.getCurrentPlayer()) ||
-               ((jni.getBoardState()[index] == 2 ||  jni.getBoardState()[index] == 4 )&& !jni.getCurrentPlayer()))) {
+            if (jni.getBoardValue(row, col)!= 0 &&
+               (((jni.getBoardValue(row, col) == 1 || jni.getBoardValue(row, col) == 3) && jni.getCurrentPlayer()) ||
+               ((jni.getBoardValue(row, col) == 2 ||  jni.getBoardValue(row, col) == 4) && !jni.getCurrentPlayer()))) {
 
                 selectedRow = row;
                 selectedCol = col;
