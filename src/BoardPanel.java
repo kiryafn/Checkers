@@ -5,17 +5,15 @@ import java.util.ArrayList;
 
 
 public class BoardPanel extends JPanel implements MouseListener{
-
-    boolean pieceSelected = false;
-    ColorListener colorlistener;
-
     static {
         System.load("/Users/alieksieiev/CLionProjects/Checkers/cmake-build-debug/libCheckers.dylib");
     }
 
+    ColorListener colorlistener;
     CheckersJNI jni = new CheckersJNI();
-    int selectedRow = -1;
-    int selectedCol = -1;
+
+    //int selectedRow = -1;
+    //int selectedCol = -1;
 
 
     public BoardPanel() {
@@ -40,7 +38,7 @@ public class BoardPanel extends JPanel implements MouseListener{
                 boolean isDarkSquare = (j + i) % 2 == 1;
 
                 // Подсветка выбранной клетки
-                if (j == selectedRow && i == selectedCol)
+                if (j == jni.getSelectedRow() && i == jni.getSelectedCol())
                     g.setColor(isDarkSquare ? new Color(168,182,88) : new Color(201, 223, 126));
                 else
                     g.setColor(isDarkSquare ? new Color(174,137,104) : new Color(236, 219, 185));
@@ -112,15 +110,15 @@ public class BoardPanel extends JPanel implements MouseListener{
         int col = e.getX() / TILE_SIZE_X;
         int row = e.getY() / TILE_SIZE_Y;
 
-        if (!pieceSelected) {
+        if (!jni.isPieceSelected()) {
             //First click
             if (jni.getBoardValue(row, col)!= 0 &&
                (((jni.getBoardValue(row, col) == 1 || jni.getBoardValue(row, col) == 3) && jni.getCurrentPlayer()) ||
                ((jni.getBoardValue(row, col) == 2 ||  jni.getBoardValue(row, col) == 4) && !jni.getCurrentPlayer()))) {
 
-                selectedRow = row;
-                selectedCol = col;
-                pieceSelected = true;  // Фиксируем, что фишка выбрана
+                jni.setSelectedRow(row);
+                jni.setSelectedCol(col);
+                jni.setPieceSelected(true);  // Фиксируем, что фишка выбрана
             }
         } else {
 
@@ -128,12 +126,16 @@ public class BoardPanel extends JPanel implements MouseListener{
             int toCol = col;
 
             // Вызываем метод movePiece в C++ через JNI, передавая координаты
-            boolean validMove = jni.movePiece(selectedRow, selectedCol, toRow, toCol);
+            boolean validMove = jni.movePiece(jni.getSelectedRow(), jni.getSelectedCol(), toRow, toCol);
 
             // Сброс выбранной фишки после хода
-            pieceSelected = false;
-            selectedRow = -1;
-            selectedCol = -1;
+            jni.setPieceSelected(false);
+
+            jni.setSelectedRow(-1);
+            jni.setSelectedCol(-1);
+
+           // selectedRow = -1;
+            //selectedCol = -1;
         }
 
         repaint();
