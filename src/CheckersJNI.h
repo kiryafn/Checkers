@@ -81,19 +81,59 @@ JNIEXPORT void JNICALL Java_CheckersJNI_setSelectedRow
 
 /*
  * Class:     CheckersJNI
- * Method:    isPieceSelected
+ * Method:    isCellSelected
  * Signature: ()Z
  */
-JNIEXPORT jboolean JNICALL Java_CheckersJNI_isPieceSelected
+JNIEXPORT jboolean JNICALL Java_CheckersJNI_isCellSelected
   (JNIEnv *, jobject);
 
 /*
  * Class:     CheckersJNI
- * Method:    setPieceSelected
- * Signature: ()V
+ * Method:    setCellSelected
+ * Signature: (Z)V
  */
-JNIEXPORT void JNICALL Java_CheckersJNI_setPieceSelected
+JNIEXPORT void JNICALL Java_CheckersJNI_setCellSelected
   (JNIEnv *, jobject, jboolean);
+
+/*
+ * Class:     CheckersJNI
+ * Method:    setFromRow
+ * Signature: (I)V
+ */
+JNIEXPORT void JNICALL Java_CheckersJNI_setFromRow
+  (JNIEnv *, jobject, jint);
+
+/*
+ * Class:     CheckersJNI
+ * Method:    setFromCol
+ * Signature: (I)V
+ */
+JNIEXPORT void JNICALL Java_CheckersJNI_setFromCol
+  (JNIEnv *, jobject, jint);
+
+/*
+ * Class:     CheckersJNI
+ * Method:    setToCol
+ * Signature: (I)V
+ */
+JNIEXPORT void JNICALL Java_CheckersJNI_setToCol
+  (JNIEnv *, jobject, jint);
+
+/*
+ * Class:     CheckersJNI
+ * Method:    setToRow
+ * Signature: (I)V
+ */
+JNIEXPORT void JNICALL Java_CheckersJNI_setToRow
+  (JNIEnv *, jobject, jint);
+
+/*
+ * Class:     CheckersJNI
+ * Method:    gameFinished
+ * Signature: ()Z
+ */
+JNIEXPORT jboolean JNICALL Java_CheckersJNI_gameFinished
+  (JNIEnv *, jobject);
 
 #ifdef __cplusplus
 }

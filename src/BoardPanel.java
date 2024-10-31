@@ -6,15 +6,12 @@ import java.awt.event.*;
 
 public class BoardPanel extends JPanel implements MouseListener, KeyListener {
 
-    int fromX = 0;
-    int fromY = 0;
     static {
         System.load("/Users/alieksieiev/CLionProjects/Checkers/cmake-build-debug/libCheckers.dylib");
     }
 
     ColorListener colorlistener;
     CheckersJNI jni = new CheckersJNI();
-
 
     public BoardPanel() {
         setFocusable(true);
@@ -111,25 +108,25 @@ public class BoardPanel extends JPanel implements MouseListener, KeyListener {
         int col = e.getX() / cellWidth;
         int row = e.getY() / cellHeight;
 
-        if (!jni.isPieceSelected()) {
+        if (!jni.isCellSelected()) {
             //First click
             if (jni.getBoardValue(row, col)!= 0 &&
                (((jni.getBoardValue(row, col) == 1 || jni.getBoardValue(row, col) == 3) && jni.getCurrentPlayer()) ||
                ((jni.getBoardValue(row, col) == 2 ||  jni.getBoardValue(row, col) == 4) && !jni.getCurrentPlayer()))) {
 
-                jni.setSelectedRow(row);
+                jni.setFromRow(row);
+                jni.setFromCol(col);
                 jni.setSelectedCol(col);
-                jni.setPieceSelected(true);  // Фиксируем, что фишка выбрана
-                fromX = row;
-                fromY = col;
+                jni.setSelectedRow(row);
+                jni.setCellSelected(true);  // Фиксируем, что фишка выбрана
             }
         } else {
 
-            int toRow = row;
-            int toCol = col;
+            jni.setToCol(col);
+            jni.setToRow(row);
 
             // Вызываем метод movePiece в C++ через JNI, передавая координаты
-            boolean validMove = jni.movePiece(jni.getSelectedRow(), jni.getSelectedCol(), toRow, toCol);
+            boolean validMove = jni.movePiece(jni.getFromRow(), jni.getFromCol(), jni.getToRow(), jni.getToCol());
 
             if (validMove) {
                 if (jni.gameFinished()){
@@ -138,10 +135,13 @@ public class BoardPanel extends JPanel implements MouseListener, KeyListener {
             }
 
             // Сброс выбранной фишки после хода
-            jni.setPieceSelected(false);
-            jni.setSelectedRow(-1);
+            jni.setCellSelected(false);
             jni.setSelectedCol(-1);
-
+            jni.setSelectedRow(-1);
+            jni.setToRow(-1);
+            jni.setToCol(-1);
+            jni.setFromRow(-1);
+            jni.setFromCol(-1);
         }
 
         repaint();
@@ -157,9 +157,7 @@ public class BoardPanel extends JPanel implements MouseListener, KeyListener {
     public void keyTyped(KeyEvent e) {}
 
 
-    public void addColorListener(ColorListener listener) {
-        colorlistener = listener;
-    }
+    public void addColorListener(ColorListener listener) {colorlistener = listener;}
 
 
     @Override
@@ -174,12 +172,12 @@ public class BoardPanel extends JPanel implements MouseListener, KeyListener {
             // Начинаем выбор с центральной клетки
             jni.setSelectedRow(3);
             jni.setSelectedCol(3);
-            jni.setPieceSelected(false);
+            jni.setCellSelected(false);
             repaint();
             return; // Прерываем выполнение, чтобы избежать дальнейшей обработки
         }
 
-        if (!jni.isPieceSelected()) {
+        if (!jni.isCellSelected()) {
             // Если фишка не выбрана, перемещаем указатель для выбора фишки
             switch (keyCode) {
                 case KeyEvent.VK_LEFT:
@@ -200,15 +198,13 @@ public class BoardPanel extends JPanel implements MouseListener, KeyListener {
 
                     // Проверка допустимости выбора фишки
                     if (boardValue != 0 &&
-                            (((boardValue == 1 || boardValue == 3) && jni.getCurrentPlayer()) ||
-                                    ((boardValue == 2 || boardValue == 4) && !jni.getCurrentPlayer()))) {
-                        jni.setPieceSelected(true);
-                        fromX = selectedRow;
-                        fromY = selectedCol;
-                        System.out.println("Фишка выбрана на (" + fromX + ", " + fromY + ")");
-                    } else {
-                        System.out.println("Невозможно выбрать фишку на (" + fromX + ", " + fromY + ")");
+                        (((boardValue == 1 || boardValue == 3) && jni.getCurrentPlayer()) ||
+                        ((boardValue == 2 || boardValue == 4) && !jni.getCurrentPlayer()))) {
+                        jni.setCellSelected(true);
+                        jni.setFromRow(selectedRow);
+                        jni.setFromCol(selectedCol);
                     }
+
                     break;
             }
 
@@ -228,39 +224,25 @@ public class BoardPanel extends JPanel implements MouseListener, KeyListener {
                     if (selectedRow < 7) jni.setSelectedRow(selectedRow + 1);
                     break;
                 case KeyEvent.VK_SPACE:
-                    // Подтверждение нового места перемещения
-                    int toRow = jni.getSelectedRow();
-                    int toCol = jni.getSelectedCol();
+                    // Подтверждение нового места перемещени
 
-                    System.out.println("ПРОБЕЛ 2: Подтверждение перемещения");
-                    System.out.println("FROM: (" + fromX + ", " + fromY + ")");
-                    System.out.println("TO: (" + toRow + ", " + toCol + ")");
+                    jni.setToRow(jni.getSelectedRow());
+                    jni.setToCol(jni.getSelectedCol());
 
-                    boolean validMove = jni.movePiece(fromX, fromY, toRow, toCol);
+                    boolean validMove = jni.movePiece(jni.getFromRow(), jni.getFromCol(), jni.getToRow(), jni.getToCol());
 
                     if (validMove) {
-                        System.out.println("Успешное перемещение: (" + fromX + ", " + fromY + ") -> (" + toRow + ", " + toCol + ")");
-
                         // Проверка завершения игры
                         if (jni.gameFinished()) {
                             System.exit(0);
                         }
-
-                        // Сброс выбора фишки
-                        jni.setPieceSelected(false);
-                        jni.setSelectedRow(-1);
-                        jni.setSelectedCol(-1);
-                    } else {
-                        System.out.println("Невозможно выполнить перемещение");
-                        jni.setPieceSelected(false);
                     }
+
+                    // Сброс выбора фишки
+                    jni.setCellSelected(false);
                     break;
             }
         }
-
-        // Вывод текущей позиции для отладки
-        System.out.println("Текущая позиция1: (" + fromX + ", " + fromY + ")");
-        System.out.println("Текущая позиция2: (" + jni.getSelectedRow() + ", " + jni.getSelectedCol() + ")");
         repaint(); // Обновление отображения
     }
 }

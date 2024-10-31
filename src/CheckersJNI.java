@@ -12,8 +12,19 @@ public class CheckersJNI {
     public native int getSelectedRow();
     public native void setSelectedCol(int a);
     public native void setSelectedRow(int a);
-    public native boolean isPieceSelected();
-    public native void setPieceSelected(boolean a);
+    public native boolean isCellSelected();
+    public native void setCellSelected(boolean a);
+
+    public native void setFromRow(int a);
+    public native void setFromCol(int a);
+    public native void setToCol(int a);
+    public native void setToRow(int a);
+
+    public native int getFromRow();
+    public native int getFromCol();
+    public native int getToCol();
+    public native int getToRow();
+
 
 
     public native boolean gameFinished();
