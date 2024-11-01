@@ -21,8 +21,12 @@ public class MyWindow extends JFrame {
         SidePanel northPanel = new SidePanel(true, true);
         SidePanel southPanel = new SidePanel(true, true);
         SidePanel westPanel = new SidePanel(false, false);
-        ColorPanel eastPanel = new ColorPanel();
+        SidePanel eastPanel = new SidePanel(false, false);
+        //ColorPanel eastPanel = new ColorPanel();
+        board.addColorListener(northPanel);
+        board.addColorListener(westPanel);
         board.addColorListener(eastPanel);
+        board.addColorListener(southPanel);
 
         add(northPanel, BorderLayout.NORTH);
         add(southPanel, BorderLayout.SOUTH);

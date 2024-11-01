@@ -7,6 +7,8 @@ public class CheckersJNI {
     public native int getBoardValue(int x, int y);
     public native boolean getCurrentPlayer();
 
+    public native void setBoardValue(int x, int y, int val);
+
     //SelectedCell class on C++
     public native int getSelectedCol();
     public native int getSelectedRow();
@@ -28,4 +30,5 @@ public class CheckersJNI {
 
 
     public native boolean gameFinished();
+    public native void resetGame();
 }

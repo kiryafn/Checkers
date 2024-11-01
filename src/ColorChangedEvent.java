@@ -5,14 +5,20 @@ public
 class ColorChangedEvent
         extends EventObject {
 
-    private Color color;
+    private Color colorFore;
+    private Color colorBack;
 
-    public ColorChangedEvent(Component component, Color color) {
+    public ColorChangedEvent(Component component, Color color1, Color color2) {
         super(component);
-        this.color = color;
+        this.colorFore = color1;
+        this.colorBack = color2;
     }
 
-    public Color getColor() {
-        return color;
+    public Color getColorBack() {
+        return colorBack;
+    }
+
+    public Color getColorFore() {
+        return colorFore;
     }
 }

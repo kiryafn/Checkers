@@ -1,16 +1,16 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 
 
-
-public class BoardPanel extends JPanel implements MouseListener, KeyListener {
+public class BoardPanel extends JPanel implements MouseListener, KeyListener{
 
     static {
         System.load("/Users/alieksieiev/CLionProjects/Checkers/cmake-build-debug/libCheckers.dylib");
     }
 
-    ColorListener colorlistener;
+    ArrayList<ColorListener> colorlistener = new ArrayList<>();
     CheckersJNI jni = new CheckersJNI();
 
     public BoardPanel() {
@@ -44,7 +44,9 @@ public class BoardPanel extends JPanel implements MouseListener, KeyListener {
                 g.fillRect(x, y, squareSizeX, squareSizeY);
             }
 
-            colorlistener.colorChanged(new ColorChangedEvent(this, jni.getCurrentPlayer() ? Color.BLACK : Color.WHITE));
+            for (ColorListener colorListener : colorlistener){
+                colorListener.colorChanged(new ColorChangedEvent(this, jni.getCurrentPlayer() ? Color.WHITE : Color.BLACK, !jni.getCurrentPlayer() ? Color.WHITE : Color.BLACK));
+            }
         }
     }
 
@@ -129,8 +131,9 @@ public class BoardPanel extends JPanel implements MouseListener, KeyListener {
             boolean validMove = jni.movePiece(jni.getFromRow(), jni.getFromCol(), jni.getToRow(), jni.getToCol());
 
             if (validMove) {
-                if (jni.gameFinished()){
-                    System.exit(0);
+                if (jni.gameFinished()) {
+                    repaint();
+                    gameOver();
                 }
             }
 
@@ -143,7 +146,6 @@ public class BoardPanel extends JPanel implements MouseListener, KeyListener {
             jni.setFromRow(-1);
             jni.setFromCol(-1);
         }
-
         repaint();
     }
 
@@ -157,7 +159,7 @@ public class BoardPanel extends JPanel implements MouseListener, KeyListener {
     public void keyTyped(KeyEvent e) {}
 
 
-    public void addColorListener(ColorListener listener) {colorlistener = listener;}
+    public void addColorListener(ColorListener listener) {colorlistener.add(listener);}
 
 
     @Override
@@ -193,7 +195,6 @@ public class BoardPanel extends JPanel implements MouseListener, KeyListener {
                     if (selectedRow < 7) jni.setSelectedRow(selectedRow + 1);
                     break;
                 case KeyEvent.VK_SPACE:
-                    System.out.println("ПРОБЕЛ 1: Выбор фишки для перемещения");
                     int boardValue = jni.getBoardValue(selectedRow, selectedCol);
 
                     // Проверка допустимости выбора фишки
@@ -232,11 +233,12 @@ public class BoardPanel extends JPanel implements MouseListener, KeyListener {
                     boolean validMove = jni.movePiece(jni.getFromRow(), jni.getFromCol(), jni.getToRow(), jni.getToCol());
 
                     if (validMove) {
-                        // Проверка завершения игры
                         if (jni.gameFinished()) {
-                            System.exit(0);
+                            repaint();
+                            gameOver();
                         }
                     }
+
 
                     // Сброс выбора фишки
                     jni.setCellSelected(false);
@@ -244,5 +246,22 @@ public class BoardPanel extends JPanel implements MouseListener, KeyListener {
             }
         }
         repaint(); // Обновление отображения
+    }
+
+    public void gameOver(){
+        String winner = jni.getCurrentPlayer() ? "White" : "Black";
+        int response = JOptionPane.showConfirmDialog(
+                null,
+                winner + " won! Want to play again?",
+                "GAME OVER",
+                JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.INFORMATION_MESSAGE
+        );
+
+        if (response == JOptionPane.OK_OPTION) {
+            jni.resetGame();
+        } else {
+            System.exit(0);
+        }
     }
 }

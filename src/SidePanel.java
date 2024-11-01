@@ -1,9 +1,12 @@
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 
-public class SidePanel extends JPanel{
+public class SidePanel extends JPanel implements ColorListener{
     private final char[] chars = {'A','B','C','D','E','F','G','H'};
     private final int[] ints = {8,7,6,5,4,3,2,1};
+    ArrayList<JLabel> labels = new ArrayList<>();
+    Color background = Color.WHITE;
 
     public SidePanel(boolean horizontal, boolean text){
         setOpaque(true);
@@ -23,14 +26,25 @@ public class SidePanel extends JPanel{
             label.setForeground(Color.WHITE);
             label.setOpaque(true);
             add(label);
+            labels.add(label);
         }
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-
-        g.setColor(new Color(51, 23, 14));
+        g.setColor(background);
         g.fillRect(0, 0, getWidth(), getHeight());
+    }
+
+    @Override
+    public void colorChanged(ColorChangedEvent e) {
+        for(JLabel label : labels){
+            label.setForeground(e.getColorFore());
+            label.setBackground(e.getColorBack());
+        }
+        background = e.getColorBack();
+
+        repaint();
     }
 }

@@ -13,6 +13,6 @@ public class ColorPanel extends JPanel implements ColorListener {
 
     @Override
     public void colorChanged(ColorChangedEvent event) {
-        this.setBackground(event.getColor());
+       // this.setBackground(event.getColor());
     }
 }
