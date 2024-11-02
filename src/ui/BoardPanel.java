@@ -1,3 +1,9 @@
+package ui;
+
+import data.ColorChangedEvent;
+import data.ColorListener;
+import domain.CheckersJNI;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;

@@ -1,3 +1,5 @@
+package domain;
+
 public class CheckersJNI {
 
     //Board class on C++
@@ -9,6 +11,7 @@ public class CheckersJNI {
     public native void setCurrentPlayer(boolean a);
 
     public native void setBoardValue(int x, int y, int val);
+
     //SelectedCell class on C++
     public native int getSelectedCol();
     public native int getSelectedRow();

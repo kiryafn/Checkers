@@ -1,3 +1,5 @@
+package data;
+
 import java.awt.*;
 import java.util.EventObject;
 

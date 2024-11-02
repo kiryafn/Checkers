@@ -1,8 +1,13 @@
+package ui;
+
+import data.ColorChangedEvent;
+import data.ColorListener;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class SidePanel extends JPanel implements ColorListener{
+public class SidePanel extends JPanel implements ColorListener {
     private final char[] chars = {'A','B','C','D','E','F','G','H'};
     private final int[] ints = {8,7,6,5,4,3,2,1};
     ArrayList<JLabel> labels = new ArrayList<>();

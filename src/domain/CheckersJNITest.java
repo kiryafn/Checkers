@@ -1,3 +1,6 @@
+package domain;
+
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -42,22 +45,32 @@ class CheckersJNITest {
     }
 
     @Test
+    void mapSizeTest() {//GWT given when then
+        int size = jni.getBoardSize();
+        assertEquals(8, size);
+    }
+
+    @Test
     void testWhiteValidMove() {
         boolean isValidMove = jni.movePiece(5, 0, 4, 1);
-        assertTrue(isValidMove, "Expected valid move from (5, 0) to (4, 1)");
 
-        assertEquals(0, jni.getBoardValue(5, 0), "Starting cell should now be empty");
-        assertEquals(2, jni.getBoardValue(4, 1), "Piece should be moved to (4, 1)");
+        assertAll(
+                () ->  assertTrue(isValidMove, "Expected valid move from (5, 0) to (4, 1)"),
+                () ->  assertEquals(0, jni.getBoardValue(5, 0), "Starting cell should now be empty"),
+                () ->  assertEquals(2, jni.getBoardValue(4, 1), "Piece should be moved to (4, 1)")
+        );
     }
 
     @Test
     void testBlackValidMove() {
         jni.setCurrentPlayer(true);
         boolean isValidMove = jni.movePiece(2, 1, 3, 2);
-        assertTrue(isValidMove);
 
-        assertEquals(0, jni.getBoardValue(2, 1), "Starting cell should now be empty");
-        assertEquals(1, jni.getBoardValue(3, 2), "Piece should be moved to (3, 2)");
+        assertAll(
+                () -> assertTrue(isValidMove),
+                () -> assertEquals(0, jni.getBoardValue(2, 1), "Starting cell should now be empty"),
+                () -> assertEquals(1, jni.getBoardValue(3, 2), "Piece should be moved to (3, 2)")
+        );
     }
 
     @Test
@@ -90,10 +103,12 @@ class CheckersJNITest {
         // Выполняем захват черной фишки
         boolean validMove = jni.movePiece(3, 3, 1, 1);
 
-        assertTrue(validMove);
-        assertEquals(2, jni.getBoardValue(1, 1));
-        assertEquals(0, jni.getBoardValue(2, 2));
-        assertEquals(0, jni.getBoardValue(3, 3));
+        assertAll(
+                () -> assertTrue(validMove),
+                () -> assertEquals(2, jni.getBoardValue(1, 1)),
+                () -> assertEquals(0, jni.getBoardValue(2, 2)),
+                () -> assertEquals(0, jni.getBoardValue(3, 3))
+        );
     }
 
     @Test
@@ -113,10 +128,12 @@ class CheckersJNITest {
 
         boolean validMove = jni.movePiece(3, 3, 1, 1);
 
-        assertTrue(validMove);
-        assertEquals(1, jni.getBoardValue(1, 1));
-        assertEquals(0, jni.getBoardValue(2, 2));
-        assertEquals(0, jni.getBoardValue(3, 3));
+        assertAll(
+                () -> assertTrue(validMove),
+                () -> assertEquals(1, jni.getBoardValue(1, 1)),
+                () -> assertEquals(0, jni.getBoardValue(2, 2)),
+                () -> assertEquals(0, jni.getBoardValue(3, 3))
+        );
     }
 
     @Test
@@ -135,9 +152,11 @@ class CheckersJNITest {
 
         boolean validMove = jni.movePiece(1, 1, 0, 0);
 
-        assertTrue(validMove);
-        assertEquals(4, jni.getBoardValue(0, 0)); // Проверяем, что фишка превратилась в дамку (4)
-        assertEquals(0, jni.getBoardValue(1, 1)); // Проверяем, что начальная клетка теперь пуста
+        assertAll(
+                () -> assertTrue(validMove),
+                () -> assertEquals(4, jni.getBoardValue(0, 0)),
+                () -> assertEquals(0, jni.getBoardValue(1, 1))
+        );
     }
 
     @Test
@@ -157,9 +176,12 @@ class CheckersJNITest {
 
         boolean validMove = jni.movePiece(6, 1, 7, 0);
 
-        assertTrue(validMove);
-        assertEquals(3, jni.getBoardValue(7, 0)); // Проверяем, что фишка превратилась в дамку (3)
-        assertEquals(0, jni.getBoardValue(6, 1)); // Проверяем, что начальная клетка теперь пуста
+        assertAll(
+                () -> assertTrue(validMove),
+                () -> assertEquals(3, jni.getBoardValue(7, 0)),
+                () -> assertEquals(0, jni.getBoardValue(6, 1))
+
+        );
     }
 
 
@@ -179,6 +201,7 @@ class CheckersJNITest {
 
         boolean validMove = jni.movePiece(6, 0, 5, 1);
 
+        assertAll();
         assertTrue(validMove);
         assertEquals(0, jni.getBoardValue(4, 1)); // Проверяем, что захваченные фишки исчезли
         assertEquals(0, jni.getBoardValue(1, 4)); // Проверяем новую позицию дамки
@@ -201,11 +224,13 @@ class CheckersJNITest {
 
         boolean validMove = jni.movePiece(7, 6, 1, 0);
 
-        assertTrue(validMove);
-        assertEquals(0, jni.getBoardValue(6, 5));
-        assertEquals(0, jni.getBoardValue(4, 3));
-        assertEquals(0, jni.getBoardValue(2, 1));
-        assertEquals(3, jni.getBoardValue(1, 0));
+        assertAll(
+                () -> assertTrue(validMove),
+                () -> assertEquals(0, jni.getBoardValue(6, 5)),
+                () -> assertEquals(0, jni.getBoardValue(4, 3)),
+                () -> assertEquals(0, jni.getBoardValue(2, 1)),
+                () -> assertEquals(3, jni.getBoardValue(1, 0))
+        );
     }
 
     @Test
@@ -225,10 +250,16 @@ class CheckersJNITest {
 
         boolean validMove = jni.movePiece(7, 6, 1, 0);
 
-        assertTrue(validMove);
-        assertEquals(0, jni.getBoardValue(6, 5));
-        assertEquals(0, jni.getBoardValue(4, 3));
-        assertEquals(0, jni.getBoardValue(2, 1));
-        assertEquals(3, jni.getBoardValue(1, 0));
+        assertAll(
+                () -> assertTrue(validMove),
+                () -> assertEquals(0, jni.getBoardValue(6, 5)),
+                () -> assertEquals(0, jni.getBoardValue(4, 3)),
+                () -> assertEquals(0, jni.getBoardValue(2, 1)),
+                () -> assertEquals(3, jni.getBoardValue(1, 0))
+        );
+    }
+
+    @AfterEach
+    void tearDown() {
     }
 }
