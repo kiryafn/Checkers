@@ -1,9 +1,7 @@
 import java.awt.*;
 import java.util.EventObject;
 
-public
-class ColorChangedEvent
-        extends EventObject {
+public class ColorChangedEvent extends EventObject {
 
     private Color colorFore;
     private Color colorBack;
