@@ -9,7 +9,7 @@ public class MyFont{
     MyFont(String name){
         super();
         try {
-            font = Font.createFont(Font.TRUETYPE_FONT, new File(name)).deriveFont(24f);
+            font = Font.createFont(Font.TRUETYPE_FONT, new File("Fonts/" + name)).deriveFont(24f);
         } catch (FontFormatException | IOException e) {
             e.printStackTrace();
         }

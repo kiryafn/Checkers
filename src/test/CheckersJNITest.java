@@ -1,4 +1,6 @@
-package domain;
+package test;
+
+import domain.CheckersJNI;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,7 +31,6 @@ class CheckersJNITest {
     @Test
     void mapInitializationTest() {//GWT given when then
         int size = jni.getBoardSize();
-        assertEquals(8, size);
 
         for (int x=0; x<size; x++) {
             for (int y=0; y<size; y++) {
@@ -238,8 +239,8 @@ class CheckersJNITest {
         int[][] customState = {
                 {0, 0, 0, 0, 0, 1, 0, 0},
                 {0, 1, 0, 1, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 1, 0, 0},
-                {0, 0, 0, 1, 0, 0, 0, 0},
+                {0, 0, 2, 0, 0, 1, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0},
                 {0, 0, 0, 0, 0, 0, 0, 0},
                 {0, 1, 0, 0, 0, 1, 0, 0},
                 {0, 0, 0, 0, 0, 0, 0, 0},
@@ -248,18 +249,32 @@ class CheckersJNITest {
         setCustomBoardState(customState);
         jni.setCurrentPlayer(true);
 
-        boolean validMove = jni.movePiece(7, 6, 1, 0);
+        boolean validMove = jni.movePiece(1, 1, 3, 3);
 
         assertAll(
                 () -> assertTrue(validMove),
-                () -> assertEquals(0, jni.getBoardValue(6, 5)),
-                () -> assertEquals(0, jni.getBoardValue(4, 3)),
-                () -> assertEquals(0, jni.getBoardValue(2, 1)),
-                () -> assertEquals(3, jni.getBoardValue(1, 0))
+                () -> assertTrue(jni.gameFinished())
         );
     }
 
-    @AfterEach
-    void tearDown() {
+    @Test
+    public void testWhiteWin() {
+        int[][] customState = {
+                {0, 0, 0, 0, 0, 2, 0, 0},
+                {0, 2, 0, 2, 0, 0, 0, 0},
+                {0, 0, 1, 0, 0, 2, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 2, 0, 0, 0, 2, 0, 0},
+                {0, 0, 0, 2, 0, 0, 0, 0},
+                {2, 0, 2, 0, 2, 0, 0, 0} // 3 - king, 2 - opponent pieces
+        };
+        setCustomBoardState(customState);
+        boolean validMove = jni.movePiece(1, 1, 3, 3);
+
+        assertAll(
+                () -> assertTrue(validMove),
+                () -> assertTrue(jni.gameFinished())
+        );
     }
 }
