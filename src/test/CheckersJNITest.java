@@ -2,7 +2,6 @@ package test;
 
 import domain.CheckersJNI;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -202,10 +201,12 @@ class CheckersJNITest {
 
         boolean validMove = jni.movePiece(6, 0, 5, 1);
 
-        assertAll();
-        assertTrue(validMove);
-        assertEquals(0, jni.getBoardValue(4, 1)); // Проверяем, что захваченные фишки исчезли
-        assertEquals(0, jni.getBoardValue(1, 4)); // Проверяем новую позицию дамки
+        assertAll(
+                () -> assertTrue(validMove),
+                () -> assertEquals(0, jni.getBoardValue(4, 1)),
+                () -> assertEquals(0, jni.getBoardValue(1, 4))
+
+        );
     }
 
     @Test
@@ -277,4 +278,62 @@ class CheckersJNITest {
                 () -> assertTrue(jni.gameFinished())
         );
     }
+
+    @Test
+    public void testBlackCaptureManyOpponentPieces() {
+        int[][] customState = {
+                {0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 2, 0, 2, 0, 0, 0},
+                {0, 0, 0, 0, 0, 1, 0, 0},
+                {0, 0, 2, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0}
+        };
+        setCustomBoardState(customState);
+        jni.setCurrentPlayer(true);
+
+        boolean validMove1 = jni.movePiece(5, 5, 3, 3);
+        boolean validMove2 = jni.movePiece(3, 3, 5, 1);
+        boolean validMove3 = jni.movePiece(5, 1, 7, 3);
+
+        assertAll(
+                () -> assertTrue(validMove1),
+                () -> assertTrue(validMove2),
+                () -> assertTrue(validMove3),
+                () -> assertEquals(0, jni.getBoardValue(4, 4)),
+                () -> assertEquals(0, jni.getBoardValue(4, 1)),
+                () -> assertEquals(0, jni.getBoardValue(6, 2))
+        );
+    }
+
+    @Test
+    public void testWhiteCaptureManyOpponentPieces() {
+        int[][] customState = {
+                {0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 1, 0, 1, 0, 0, 0},
+                {0, 0, 0, 0, 0, 2, 0, 0},
+                {0, 0, 1, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0}
+        };
+        setCustomBoardState(customState);
+
+        boolean validMove1 = jni.movePiece(5, 5, 3, 3);
+        boolean validMove2 = jni.movePiece(3, 3, 5, 1);
+        boolean validMove3 = jni.movePiece(5, 1, 7, 3);
+
+        assertAll(
+                () -> assertTrue(validMove1),
+                () -> assertTrue(validMove2),
+                () -> assertTrue(validMove3),
+                () -> assertEquals(0, jni.getBoardValue(4, 4)),
+                () -> assertEquals(0, jni.getBoardValue(4, 1)),
+                () -> assertEquals(0, jni.getBoardValue(6, 2))
+        );
+    }
+
 }

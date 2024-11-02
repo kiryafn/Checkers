@@ -58,50 +58,50 @@ public class BoardPanel extends JPanel implements MouseListener, KeyListener{
 
     public void paintPieces(Graphics g){
 
-        int squareSizeX = getWidth() / 8;
-        int squareSizeY = getHeight() / 8;
+        int cellSizeX = getWidth() / 8;
+        int cellSizeY = getHeight() / 8;
 
-        for(int i=0, x=0; i<jni.getBoardSize(); i++, x+=squareSizeX){
-            for(int j=0, y=0; j<jni.getBoardSize(); j++, y+=squareSizeY){
+        for(int i=0, x=0; i<jni.getBoardSize(); i++, x+=cellSizeX){
+            for(int j=0, y=0; j<jni.getBoardSize(); j++, y+=cellSizeY){
                 if (jni.getBoardValue(j,i) == 1) {
                     g.setColor(Color.BLACK);
-                    g.fillOval(x + (squareSizeX - squareSizeX + 10) / 2,
-                               y + (squareSizeY - squareSizeY + 10) / 2,
-                            squareSizeX - 10,
-                            squareSizeY - 10);
+                    g.fillOval(x + (cellSizeX - cellSizeX + 10) / 2,
+                               y + (cellSizeY - cellSizeY + 10) / 2,
+                            cellSizeX - 10,
+                            cellSizeY - 10);
                 }
                 else if (jni.getBoardValue(j,i) == 2) {
                     g.setColor(Color.WHITE);
-                    g.fillOval(x + (squareSizeX - squareSizeX+10) / 2,
-                               y + (squareSizeY - squareSizeY+10) / 2,
-                            squareSizeX-10,
-                            squareSizeY-10);
+                    g.fillOval(x + (cellSizeX - cellSizeX+10) / 2,
+                               y + (cellSizeY - cellSizeY+10) / 2,
+                            cellSizeX-10,
+                            cellSizeY-10);
                 }
 
                 else if (jni.getBoardValue(j,i) == 3) {
                     g.setColor(Color.WHITE);
-                    g.fillOval(x + (squareSizeX - squareSizeX+10) / 2,
-                            y + (squareSizeY - squareSizeY+10) / 2,
-                            squareSizeX-10,
-                            squareSizeY-10);
+                    g.fillOval(x + (cellSizeX - cellSizeX+10) / 2,
+                            y + (cellSizeY - cellSizeY+10) / 2,
+                            cellSizeX-10,
+                            cellSizeY-10);
                     g.setColor(Color.BLACK);
-                    g.fillOval(x + (squareSizeX - squareSizeX+20) / 2,
-                            y + (squareSizeY - squareSizeY+20) / 2,
-                            squareSizeX-20,
-                            squareSizeY-20);
+                    g.fillOval(x + (cellSizeX - cellSizeX+20) / 2,
+                            y + (cellSizeY - cellSizeY+20) / 2,
+                            cellSizeX-20,
+                            cellSizeY-20);
                 }
 
                 else if (jni.getBoardValue(j,i) == 4) {
                     g.setColor(Color.BLACK);
-                    g.fillOval(x + (squareSizeX - squareSizeX+10) / 2,
-                            y + (squareSizeY - squareSizeY+10) / 2,
-                            squareSizeX-10,
-                            squareSizeY-10);
+                    g.fillOval(x + (cellSizeX - cellSizeX+10) / 2,
+                            y + (cellSizeY - cellSizeY+10) / 2,
+                            cellSizeX-10,
+                            cellSizeY-10);
                     g.setColor(Color.WHITE);
-                    g.fillOval(x + (squareSizeX - squareSizeX+20) / 2,
-                            y + (squareSizeY - squareSizeY+20) / 2,
-                            squareSizeX-20,
-                            squareSizeY-20);
+                    g.fillOval(x + (cellSizeX - cellSizeX+20) / 2,
+                            y + (cellSizeY - cellSizeY+20) / 2,
+                            cellSizeX-20,
+                            cellSizeY-20);
                 }
             }
         }
@@ -119,34 +119,35 @@ public class BoardPanel extends JPanel implements MouseListener, KeyListener{
         if (!jni.isCellSelected()) {
             //First click
             if (jni.getBoardValue(row, col)!= 0 &&
-               (((jni.getBoardValue(row, col) == 1 || jni.getBoardValue(row, col) == 3) && jni.getCurrentPlayer()) ||
-               ((jni.getBoardValue(row, col) == 2 ||  jni.getBoardValue(row, col) == 4) && !jni.getCurrentPlayer()))) {
+               (((jni.getBoardValue(row, col) == 1 || jni.getBoardValue(row, col) == 3) &&  jni.getCurrentPlayer()) ||
+                ((jni.getBoardValue(row, col) == 2 || jni.getBoardValue(row, col) == 4) && !jni.getCurrentPlayer()))) {
 
                 jni.setFromRow(row);
                 jni.setFromCol(col);
                 jni.setSelectedCol(col);
                 jni.setSelectedRow(row);
-                jni.setCellSelected(true);  // Фиксируем, что фишка выбрана
+                jni.setCellSelected(true);
             }
         } else {
 
             jni.setToCol(col);
             jni.setToRow(row);
 
-            // Вызываем метод movePiece в C++ через JNI, передавая координаты
             boolean validMove = jni.movePiece(jni.getFromRow(), jni.getFromCol(), jni.getToRow(), jni.getToCol());
 
             if (validMove) {
                 if (jni.gameFinished()) {
+                    jni.setCellSelected(false);
+                    jni.setSelectedCol(-1);
+                    jni.setSelectedRow(-1);
                     repaint();
                     gameOver();
                 }
             }
 
-            // Сброс выбранной фишки после хода
+            //Reset selected cells
             jni.setCellSelected(false);
-            jni.setSelectedCol(-1);
-            jni.setSelectedRow(-1);
+
             jni.setToRow(-1);
             jni.setToCol(-1);
             jni.setFromRow(-1);
@@ -182,11 +183,11 @@ public class BoardPanel extends JPanel implements MouseListener, KeyListener{
             jni.setSelectedCol(3);
             jni.setCellSelected(false);
             repaint();
-            return; // Прерываем выполнение, чтобы избежать дальнейшей обработки
+            return;
         }
 
         if (!jni.isCellSelected()) {
-            // Если фишка не выбрана, перемещаем указатель для выбора фишки
+            //Before selected
             switch (keyCode) {
                 case KeyEvent.VK_LEFT:
                     if (selectedCol > 0) jni.setSelectedCol(selectedCol - 1);
@@ -203,7 +204,7 @@ public class BoardPanel extends JPanel implements MouseListener, KeyListener{
                 case KeyEvent.VK_SPACE:
                     int boardValue = jni.getBoardValue(selectedRow, selectedCol);
 
-                    // Проверка допустимости выбора фишки
+                    //Check piece availability
                     if (boardValue != 0 &&
                         (((boardValue == 1 || boardValue == 3) && jni.getCurrentPlayer()) ||
                         ((boardValue == 2 || boardValue == 4) && !jni.getCurrentPlayer()))) {
@@ -216,7 +217,7 @@ public class BoardPanel extends JPanel implements MouseListener, KeyListener{
             }
 
         } else {
-            // Если фишка выбрана, перемещаем её
+            //After piece selected
             switch (keyCode) {
                 case KeyEvent.VK_LEFT:
                     if (selectedCol > 0) jni.setSelectedCol(selectedCol - 1);
@@ -231,8 +232,6 @@ public class BoardPanel extends JPanel implements MouseListener, KeyListener{
                     if (selectedRow < 7) jni.setSelectedRow(selectedRow + 1);
                     break;
                 case KeyEvent.VK_SPACE:
-                    // Подтверждение нового места перемещени
-
                     jni.setToRow(jni.getSelectedRow());
                     jni.setToCol(jni.getSelectedCol());
 
@@ -240,13 +239,16 @@ public class BoardPanel extends JPanel implements MouseListener, KeyListener{
 
                     if (validMove) {
                         if (jni.gameFinished()) {
+                            jni.setCellSelected(false);
+                            jni.setSelectedCol(-1);
+                            jni.setSelectedRow(-1);
                             repaint();
                             gameOver();
                         }
                     }
 
 
-                    // Сброс выбора фишки
+                    //Reset selected piece
                     jni.setCellSelected(false);
                     break;
             }
@@ -259,7 +261,7 @@ public class BoardPanel extends JPanel implements MouseListener, KeyListener{
         int response = JOptionPane.showConfirmDialog(
                 null,
                 winner + " won! Want to play again?",
-                "GAME OVER",
+                "Game over",
                 JOptionPane.OK_CANCEL_OPTION,
                 JOptionPane.INFORMATION_MESSAGE
         );

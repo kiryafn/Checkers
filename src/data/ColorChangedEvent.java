@@ -5,8 +5,8 @@ import java.util.EventObject;
 
 public class ColorChangedEvent extends EventObject {
 
-    private Color colorFore;
-    private Color colorBack;
+    private final Color colorFore;
+    private final Color colorBack;
 
     public ColorChangedEvent(Component component, Color color1, Color color2) {
         super(component);
