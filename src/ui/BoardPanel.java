@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public class BoardPanel extends JPanel implements MouseListener, KeyListener{
 
     static {
-        System.load("/Users/alieksieiev/CLionProjects/Checkers/cmake-build-debug/libCheckers.dylib");
+        System.load("/Users/alieksieiev/IdeaProjects/UTP/Project/Checkers/C++/cmake-build-debug/libCheckers.dylib");
     }
 
     ArrayList<ColorListener> colorlistener = new ArrayList<>();
@@ -147,6 +147,8 @@ public class BoardPanel extends JPanel implements MouseListener, KeyListener{
 
             //Reset selected cells
             jni.setCellSelected(false);
+            jni.setSelectedCol(-1);
+            jni.setSelectedRow(-1);
 
             jni.setToRow(-1);
             jni.setToCol(-1);

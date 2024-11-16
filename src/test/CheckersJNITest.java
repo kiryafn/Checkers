@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class CheckersJNITest {
     static {
-        System.load("/Users/alieksieiev/CLionProjects/Checkers/cmake-build-debug/libCheckers.dylib");
+        System.load("/Users/alieksieiev/IdeaProjects/UTP/Project/Checkers/C++/cmake-build-debug/libCheckers.dylib");
     }
 
     private CheckersJNI jni;
